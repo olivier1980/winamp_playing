@@ -8,6 +8,13 @@ int init();
 
 char PLUGIN_NAME[] = "Oli plugin";
 
+enum PlaybackState // Enumeration values set up to match IPC_ISPLAYING
+{
+	Stopped = 0,
+	Playing = 1,
+	Paused = 3
+};
+
 typedef struct {
     int version;
     char *description;
