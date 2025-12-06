@@ -2,6 +2,8 @@ Based on https://github.com/clandrew/wdrp/tree/master/DiscordRichPresence
 
 Simple Winamp plugin that works under Wine.
 
-Writes the current playing song to local folder.
+Writes the current playing song to /tmp/oli_current_playing.txt.
 
-Work in progress, currently only showing the filepath in a messagebox.
+Now this file can be read by other programs in Linux and other actions can be taken.
+
+In my case, I want a quick shortcut to delete the currently playing song, and existing Winamp "delete file" plugins weren't working under Wine.
