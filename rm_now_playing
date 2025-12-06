@@ -1,0 +1,10 @@
+#!/bin/bash
+value=`cat /tmp/oli_current_playing.txt`
+
+newpath=$(printf "%s" "$value" | sed 's/\\/\//g')
+
+if [[ $newpath == Z:* ]]; then
+	stripped="${newpath#Z:}"
+	rm "$stripped"
+	notify-send "Deleted $stripped"
+fi
