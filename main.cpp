@@ -3,10 +3,13 @@
 #include "main.h"
 #include "Timer.h"
 #include <string>
+#include <fstream>
 
 HWND hwndWinamp;
 HINSTANCE hInstance;
 Timer g_timer;
+
+std::wstring path = L"/tmp/oli_current_playing.txt";
 
 winampGeneralPurposePlugin g_plugin = {
     GPPHDR_VER,
@@ -27,7 +30,6 @@ void CALLBACK TimerProc(HWND, UINT, UINT_PTR, DWORD)
 {
     //MessageBox(g_plugin.hwndParent, L"cb called", L"Debug", MB_OK);
 }
-
 
 int init()
 {
@@ -58,10 +60,29 @@ void ReportCurrentSongStatus(PlaybackState playbackState)
 
     if (current != title) {
         current = title;
-        MessageBox(g_plugin.hwndParent, title.c_str(), L"Debug", MB_OK);
+        //MessageBox(g_plugin.hwndParent, title.c_str(), L"Debug", MB_OK);
+
+        HANDLE hFile = CreateFileW(path.c_str(), GENERIC_WRITE, 0, NULL,
+                                   CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+        if (hFile != INVALID_HANDLE_VALUE) {
+            std::wstring line = title;
+
+            // Convert wide string (UTF‑16) to UTF‑8
+            int len = WideCharToMultiByte(CP_UTF8, 0, title.c_str(), -1,
+                                          nullptr, 0, nullptr, nullptr);
+            std::string utf8line(len - 1, '\0'); // -1 to drop null terminator
+            WideCharToMultiByte(CP_UTF8, 0, title.c_str(), -1,
+                                &utf8line[0], len, nullptr, nullptr);
+
+            DWORD written;
+        WriteFile(hFile, utf8line.c_str(),
+                  (DWORD)utf8line.size(), &written, NULL);
+            CloseHandle(hFile);
+        }
+
     }
 }
-
 
 void UpdateRichPresenceDetails()
 {
